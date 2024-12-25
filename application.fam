@@ -3,6 +3,7 @@ App(
     name="Tamagometer",
     apptype=FlipperAppType.EXTERNAL,
     entry_point="tamagometer_companion",
+    sources=["*.c"],
     requires=["gui", "infrared"],
     fap_category="Examples",
 )
