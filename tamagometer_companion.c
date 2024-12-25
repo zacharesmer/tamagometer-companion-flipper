@@ -217,11 +217,7 @@ static void tamagometer_start_cli(Cli* cli, FuriString* args, void* context) {
 
     app_state.command_decoded = false;
     app_state.timed_out = false;
-    // UNUSED(cli);
-    // UNUSED(args);
-    // UNUSED(context);
 
-    // cli_write(cli, args, size_t size);
     const char* args_string = furi_string_get_cstr(args);
     char bitstring[161];
     if(sscanf(args_string, "send%s", bitstring)) {
@@ -256,9 +252,8 @@ int32_t tamagometer_companion(void* arg) {
     // Set some text so that the text box is not empty.
     text_box_set_text(
         text_box,
-        "ViewHolder is being used\n"
-        "to show this TextBox view.\n\n"
-        "Scroll down to see more.\n\n\n"
+        "Connect to\n"
+        "zacharesmer.github.io/tamagometer\n\n"
         "Press \"Back\" to exit.");
 
     // Create a ViewHolder instance. It will serve as an adapter to convert
