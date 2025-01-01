@@ -157,11 +157,11 @@ static void listen(Cli* cli, void* context) {
     infrared_worker_rx_set_received_signal_callback(worker, signal_received_callback, cli);
     infrared_worker_rx_start(worker);
     // default timeout value is 150,000 us, I need it shorter. Longest gap in the tamagotchi messages is about 9,000 us
-    furi_hal_infrared_async_rx_set_timeout(12000);
+    furi_hal_infrared_async_rx_set_timeout(8000);
 
     // printf("Receiving %s INFRARED...\r\nPress Ctrl+C to abort\r\n", "RAW");
     while(!(app_state.command_decoded || app_state.timed_out)) {
-        furi_delay_ms(10);
+        furi_delay_ms(1);
     }
 
     // TODO: worry about the race condition where the timer times out while the signal received callback is running and processing the signal.
