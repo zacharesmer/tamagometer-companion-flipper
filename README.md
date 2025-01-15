@@ -16,6 +16,9 @@ You can also build the app yourself. Install uFBT with the instructions in the [
 ## Usage
 The app needs to be open on your Flipper for the website to work correctly. When the app is opened, it adds the CLI command `tamagometer` to the flipper. When it's closed it removes the command.
 
+## Disclaimer
+This project is entirely unofficial and not affiliated with Tamagotchi or Bandai. 
+
 ## Other
 I learned a lot about Flipper apps and the Flipper in general making this, and I've written some of it down in case it helps anyone else.
 
