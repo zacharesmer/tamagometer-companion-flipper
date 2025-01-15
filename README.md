@@ -4,7 +4,7 @@ The web app it's a companion for: https://zacharesmer.github.io/tamagometer/
 Main tamagometer repo: https://github.com/zacharesmer/tamagometer
 
 ## Download a pre-built version
-Find the most recent workflow run [here](https://github.com/zacharesmer/tamagometer-companion-flipper/actions), download the artifact, and put the `.fap` file on your Flipper's SD card. It automatically builds once a day (or after an app update) for the most recent release version of the Flipper's firmware. 
+Find the most recent workflow run [here](https://github.com/zacharesmer/tamagometer-companion-flipper/actions), download the artifact, and put the `.fap` file on your Flipper's SD card. It automatically builds once a day (or it's supposed to, anyway) to keep up with the most recent release version of the Flipper's firmware. 
 
 ## Building and Running
 You can also build the app yourself. Install uFBT with the instructions in the [uFBT repo](https://github.com/flipperdevices/flipperzero-ufbt). Essentially:
