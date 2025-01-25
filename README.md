@@ -3,6 +3,9 @@ The web app it's a companion for: https://zacharesmer.github.io/tamagometer/
 
 Main tamagometer repo: https://github.com/zacharesmer/tamagometer
 
+## Flipper App Catalog
+You can use the Flipper App catalog to install the most recent release of this app. Search "Tamagometer" or look in the Infrared category.
+
 ## Download a pre-built version
 Find the most recent workflow run [here](https://github.com/zacharesmer/tamagometer-companion-flipper/actions), download the artifact, and put the `.fap` file on your Flipper's SD card. It automatically builds once a day (or it's supposed to, anyway) to keep up with the most recent release version of the Flipper's firmware. 
 
