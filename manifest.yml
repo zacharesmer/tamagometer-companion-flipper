@@ -4,7 +4,7 @@ sourcecode:
     ## Specify the git URL of your repository
     origin: https://github.com/zacharesmer/tamagometer-companion-flipper.git
     ## Put the full commit SHA of the commit with the app's code you want to submit
-    commit_sha: 5039ea96557481cef9073042aafc41dd3f912af4
+    commit_sha: c4a7ac7ae67ca8ad4aec35deb5d6a14d26a551c8
     ## (Optional) If your app is located in a subdirectory of the repository, specify it here
     # subdir: .
 ## For 'description' and 'changelog', you can use limited markdown syntax
