@@ -121,8 +121,7 @@ bool decode_signal_to_tamabits(InfraredWorkerSignal* received_signal, unsigned c
     return true;
 }
 
-static void signal_received_callback(void* context, InfraredWorkerSignal* received_signal) {
-    UNUSED(context);
+static void signal_received_callback(void* pipe, InfraredWorkerSignal* received_signal) {
     // todo: set processing_started flag
     furi_assert(received_signal);
     unsigned char tamabits[160];
@@ -131,9 +130,9 @@ static void signal_received_callback(void* context, InfraredWorkerSignal* receiv
         // print out the signal
         // cli_write(cli, (uint8_t*)tamabits, 160);
         FURI_LOG_I("TEST", "I saw a signal!!!!");
-        pipe_send(context, (unsigned char*)"[PICO]", 6);
-        pipe_send(context, tamabits, 160);
-        pipe_send(context, (unsigned char*)"[END]", 6);
+        pipe_send(pipe, (unsigned char*)"[PICO]", 6);
+        pipe_send(pipe, tamabits, 160);
+        pipe_send(pipe, (unsigned char*)"[END]", 6);
         app_state.command_decoded = true;
 
     } else {
