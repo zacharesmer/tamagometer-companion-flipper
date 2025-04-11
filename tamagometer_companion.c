@@ -13,7 +13,7 @@
 #include <gui/modules/text_box.h>
 #include <gui/view_holder.h>
 
-#include <cli/cli.h>
+#include <cli/cli_main_commands.h>
 #include <furi_hal_infrared.h>
 #include <infrared.h>
 #include <infrared_transmit.h>
@@ -131,9 +131,9 @@ static void signal_received_callback(void* context, InfraredWorkerSignal* receiv
         // print out the signal
         // cli_write(cli, (uint8_t*)tamabits, 160);
         FURI_LOG_I("TEST", "I saw a signal!!!!");
-        cli_write(context, (unsigned char*)"[PICO]", 6);
-        cli_write(context, tamabits, 160);
-        cli_write(context, (unsigned char*)"[END]", 6);
+        pipe_send(context, (unsigned char*)"[PICO]", 6);
+        pipe_send(context, tamabits, 160);
+        pipe_send(context, (unsigned char*)"[END]", 6);
         app_state.command_decoded = true;
 
     } else {
@@ -148,20 +148,21 @@ static void timed_out_callback(void* arg) {
     app_state.timed_out = true;
 }
 
-static void listen(Cli* cli, void* context) {
+static void listen(void* context) {
+    // set a timeout so the command will exit after 1 second
     FuriTimer* timer = furi_timer_alloc(timed_out_callback, FuriTimerTypeOnce, context);
     furi_timer_start(timer, furi_ms_to_ticks(1000));
     // furi_timer_restart(timer, furi_ms_to_ticks(1000));
 
     InfraredWorker* worker = infrared_worker_alloc();
-    infrared_worker_rx_set_received_signal_callback(worker, signal_received_callback, cli);
+    infrared_worker_rx_set_received_signal_callback(worker, signal_received_callback, context);
     infrared_worker_rx_start(worker);
     // default timeout value is 150,000 us, I need it shorter.
     furi_hal_infrared_async_rx_set_timeout(
         decoder_states.header_space + decoder_states.header_space_tolerance);
 
     // printf("Receiving %s INFRARED...\r\nPress Ctrl+C to abort\r\n", "RAW");
-    while(!(app_state.command_decoded || app_state.timed_out)) {
+    while(!(app_state.command_decoded || app_state.timed_out || cli_is_pipe_broken_or_is_etx_next_char(context))) {
         furi_delay_ms(1);
     }
 
@@ -207,8 +208,7 @@ static bool tamabits_to_timings(char* bitstring, uint32_t* timings) {
     return true;
 }
 
-static void send(Cli* cli, char* bitstring) {
-    UNUSED(cli);
+static void send(char* bitstring) {
     // 2 timings for preamble, 320 for bits, 1 for ending mark
     uint32_t timings[2 + 320 + 1];
     if(tamabits_to_timings(bitstring, timings)) {
@@ -216,7 +216,8 @@ static void send(Cli* cli, char* bitstring) {
     }
 }
 
-static void tamagometer_start_cli(Cli* cli, FuriString* args, void* context) {
+static void tamagometer_start_cli(PipeSide* pipe, FuriString* args, void* context) {
+    UNUSED(context);
     // Acquire the cli_lock so that the GUI part of the app will wait to exit
     // if the CLI is still running something. This should hopefully reduce the
     // number of null pointer dereferences on exit
@@ -230,10 +231,10 @@ static void tamagometer_start_cli(Cli* cli, FuriString* args, void* context) {
     char bitstring[161];
     if(sscanf(args_string, "send%s", bitstring)) {
         // send the bitstring
-        send(cli, bitstring);
+        send(bitstring);
     } else if(strcmp(args_string, "listen") == 0) {
         // listen
-        listen(cli, context);
+        listen(pipe);
     } else {
         printf("Arguments: \"%s\"\n", args_string);
         printf("Invalid argument(s).\n");
@@ -252,9 +253,9 @@ int32_t tamagometer_companion(void* arg) {
 
     // Add the CLI command that the website will use to do stuff.
     // It will be removed when the GUI program exits.
-    Cli* cli = (Cli*)furi_record_open(RECORD_CLI);
+    CliRegistry* cli = furi_record_open(RECORD_CLI);
     FURI_LOG_I("TEST", "Adding command to CLI...");
-    cli_add_command(cli, "tamagometer", CliCommandFlagParallelSafe, tamagometer_start_cli, NULL);
+    cli_registry_add_command(cli, "tamagometer", CliCommandFlagParallelSafe, tamagometer_start_cli, NULL);
     furi_record_close(RECORD_CLI);
 
     // Access the GUI API instance.
@@ -305,9 +306,9 @@ int32_t tamagometer_companion(void* arg) {
     // application is about to exit.
 
     // Remove the CLI command so it can't be used again
-    Cli* cli2 = (Cli*)furi_record_open(RECORD_CLI);
+    CliRegistry* cli2 = furi_record_open(RECORD_CLI);
     FURI_LOG_I("TEST", "Deleting command from CLI...");
-    cli_delete_command(cli2, "tamagometer");
+    cli_registry_delete_command(cli2, "tamagometer");
     furi_record_close(RECORD_CLI);
     // Wait for the CLI command to exit if it is running.
     api_lock_wait_unlock_and_free(app_state.cli_lock);
