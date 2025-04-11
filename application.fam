@@ -6,7 +6,7 @@ App(
     sources=["*.c"],
     requires=["gui", "infrared"],
     fap_category="Infrared",
-    fap_version="0.2",
+    fap_version="0.3",
     fap_author="zacharesmer",
     fap_icon="appicon.png",
     fap_description="Talk to your Tamagotchi Connection (2024) with the tamagometer website and your Flipper",
