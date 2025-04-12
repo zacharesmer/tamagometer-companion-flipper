@@ -13,7 +13,7 @@
 #include <gui/modules/text_box.h>
 #include <gui/view_holder.h>
 
-#include <cli/cli_main_commands.h>
+#include <cli/cli_registry.h>
 #include <furi_hal_infrared.h>
 #include <infrared.h>
 #include <infrared_transmit.h>
@@ -23,6 +23,9 @@
 
 // borrowed from infrared_common_i.h
 #define MATCH_TIMING(x, v, delta) (((x) < ((v) + (delta))) && ((x) > ((v) - (delta))))
+
+// just get this to compile until they bring back RECORD_CLI
+#define RECORD_CLI "cli"
 
 static struct {
     bool command_decoded;
